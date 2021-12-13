@@ -127,13 +127,11 @@ export default {
       mdiRobot: mdiRobot
     }
   },
-  async fetch (ctx) {
+    async fetch (ctx) {
     try {
-      await Promise.all([
-        ctx.store.dispatch('bot_index/fetchNew'),
-        ctx.store.dispatch('bot_index/fetchLike'),
-        ctx.store.dispatch('bot_index/fetchTag')
-      ])
+      await ctx.store.dispatch('bot_index/fetchNew')
+      await ctx.store.dispatch('bot_index/fetchLike')
+      await ctx.store.dispatch('bot_index/fetchTag')
       ctx.$setLikeData(ctx.store.getters['bot_index/getNew'].results)
       ctx.$setLikeData(ctx.store.getters['bot_index/getLike'].results)
     } catch (err) {

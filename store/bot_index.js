@@ -50,7 +50,7 @@ export const actions = {
   },
   async fetchTag({ commit }) {
     try {
-      let data = await this.$axios.$get(`/api/bottags/?limit=75&ordering=-count`)
+      let data = await this.$axios.$get(`/api/bottags/?limit=50&ordering=-count`)
       commit('registTag', data)
     } catch (err) {
       // pass

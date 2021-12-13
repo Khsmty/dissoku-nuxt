@@ -1,0 +1,26 @@
+{
+  "title": "Discord sokuhou",
+  "short_title": "Dissoku",
+  "sub_title": "Discord Server, Friends, and Bot Board",
+  "common": {
+    "search_server": "Search for a server",
+    "server": "Server",
+    "friend": "Friend",
+    "bot": "Bot"
+  },
+  "header": {
+    "mypage": "My Page",
+    "logout": "Logout"
+  },
+  "index": {
+    "servers_count": "servers now listed!",
+    "list_servers": "List of Discord servers",
+    "active_ranking": "Active Ranking"
+  },
+  "footer": {
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "support": "Support Server",
+    "twitter": "Twitter"
+  }
+}

@@ -1,6 +1,6 @@
 <template>
   <v-row
-    v-if="reviewCnt"
+    v-if="review_cnt"
     class="mb-5"
   >
     <v-col
@@ -25,7 +25,7 @@
           cols="3"
           xl="2"
         >
-          <span><span class="text-h3">{{ scoreAvg }}</span><span style="font-color: #bdbdbd">/5</span></span>
+          <span><span class="text-h3">{{ score_avg }}</span><span style="font-color: #bdbdbd">/5</span></span>
         </v-col>
         <v-col
           :class="$vuetify.breakpoint.name != 'xs' ? '' : 'ml-0 pl-0'"
@@ -37,13 +37,13 @@
             style="text-align:left;"
             length="5"
             size="50"
-            :value="scoreAvg"
+            :value="score_avg"
             color="yellow darken-3"
             readonly
             half-increments
           />
           <v-subheader class="pl-2">
-            {{ reviewCnt }} 件のレビュー
+            {{ review_cnt }} 件のレビュー
           </v-subheader>
         </v-col>
       </v-row>
@@ -53,6 +53,6 @@
 
 <script>
 export default {
-  props: ['reviewCnt', 'scoreAvg', 'title']
+  props: ['review_cnt', 'score_avg', 'title']
 }
 </script>

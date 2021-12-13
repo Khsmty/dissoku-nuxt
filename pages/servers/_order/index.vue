@@ -83,17 +83,44 @@ export default {
     ServerSelectBtns: () => import('@/components/btns/ServerSelectBtns.vue'),
     BreadCrumb      : () => import('@/components/Breadcrumb.vue')
   },
-  async fetch (ctx) {
-    try {
-      await ctx.store.dispatch('guild_list/fetchOrder', {order: ctx.route.params.order, page: ctx.route.query.page})
-      ctx.$setLikeData(ctx.store.getters['guild_list/get'].results)
-    } catch (err) {
-      ctx.error({statusCode: 400})
+  async asyncData ({app, $axios, params, query, error})
+  {
+    try
+    {
+      let data    = {}
+      let page = query.page ? query.page : 1
+      let parameters = { 'member': '-membernum,-upped_at', 'like': '-likes,-upped_at', 'rank': '-exp,-upped_at'}
+      if (!parameters[params.order]) {
+        error({statusCode: 400})
+      }
+      let url = `/api/guilds?ordering=${encodeURIComponent(parameters[params.order])}&page=${page}`
+      data.guilds    = await $axios.$get(url)
+      app.$setLikeData(data.guilds.results)
+      data.meta_data  = app.$loadserversmeta(params, query)
+      let title_arr = {'member': '人気順', 'like': 'いいね順', 'rank': 'アクティブ順'}
+      data.breadcrumbs= [
+        {
+          name: 'ディス速',
+          path: '/'
+        },
+        {
+          name: 'サーバー一覧',
+          path: '/servers?page=1'
+        },
+        {
+          name: title_arr[params.order]
+        }
+      ]
+      return data
+    }
+    catch(err)
+    {
+      error({statusCode: 400})
     }
   },
   data () {
     return {
-      guilds: this.$store.getters['guild_list/get'],
+      guilds:    [],
       title_arr: {'member': '人気順', 'like': 'いいね順', 'rank': 'アクティブ順'},
       emoji_arr: {'member': '🙌', 'like': '👍', 'rank': '👑'},
       subtitle: {'member': '', 'like': '', 'rank': '活発なサーバーのランキングです！'},
@@ -108,23 +135,6 @@ export default {
       ]
     }
   },
-  watchQuery: true,
-  created() {
-      this.meta_data  = this.$loadserversmeta(this.$route.params.order, this.$route.query)
-      let title_arr = {'member': '人気順', 'like': 'いいね順', 'rank': 'アクティブ順'}
-      this.breadcrumbs= [
-        {
-          name: 'ディス速',
-          path: '/'
-        },
-        {
-          name: 'サーバー一覧',
-          path: '/servers?page=1'
-        },
-        {
-          name: title_arr[this.$route.params.order]
-        }
-      ]
-  }
+  watchQuery: true
 }
 </script>

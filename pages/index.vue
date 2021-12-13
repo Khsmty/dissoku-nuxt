@@ -43,7 +43,7 @@
                   class="title font-weight-bold"
                   style="color:#7289DA;"
                 >
-                  ディスコード速報
+                  {{ $t('title') }}
                 </h2>
               </v-col>
             </v-row>
@@ -154,7 +154,7 @@
           <v-col>
             <h2>
               <v-subheader class="float-right text-h6">
-                {{ count }}&nbsp;サーバー掲載中!!
+                {{ count }}&nbsp;{{ $t('index.servers_count') }}
               </v-subheader>
             </h2>
           </v-col>
@@ -173,8 +173,8 @@
           align="center"
         >
           <v-col>
-            <nuxt-link to="/servers?page=1">
-              <ContentTitle title="📖Discord サーバー一覧" />
+            <nuxt-link to="/servers">
+              <ContentTitle :title="'📖 ' + $t('index.list_servers')" />
             </nuxt-link>
           </v-col>
         </v-row>
@@ -215,7 +215,7 @@
         >
           <v-col>
             <nuxt-link to="/servers/rank?page=1">
-              <ContentTitle title="👑Discord アクティブランキング" />
+              <ContentTitle :title="'👑 ' + $t('index.active_ranking')" />
             </nuxt-link>
           </v-col>
         </v-row>

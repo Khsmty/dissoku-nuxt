@@ -76,30 +76,14 @@ export default {
     Pagination: () => import('@/components/btns/Pagination.vue'),
     BreadCrumb  : () => import('@/components/Breadcrumb.vue')
   },
-  data () {
-    return {
-      profiles: this.$store.getters['user_list/get'],
-      meta_data: {}
-    }
-  },
-  async fetch (ctx) {
-    try {
-      await ctx.store.dispatch('user_list/fetchUpdate', ctx.query.page)
-    } catch (err) {
-      ctx.error({statusCode: 400})
-    }
-  },
-  head () {
-    return {
-      title:  'フレンド募集一覧です',
-      meta: [
-        { hid: 'description', name: 'description', content: '全てのフレンド募集の更新順一覧です！素晴らしいフレンドとの出会いがきっとあります。'}
-      ]
-    }
-  },
-  watchQuery: true,
-  created () {
-    this.breadcrumbs= [
+  async asyncData ({$axios, query, error})
+  {
+    try
+    {
+      let data    = {}
+      let res_profiles = $axios.$get('/api/userprofiles/?page='+query.page)
+      data.profiles = await res_profiles
+      data.breadcrumbs= [
         {
           name: 'ディス速',
           path: '/'
@@ -112,6 +96,27 @@ export default {
           name: 'フレンド募集一覧'
         }
       ]
-  }
+      return data
+    }
+    catch(err)
+    {
+      error({statusCode: 400})
+    }
+  },
+  data () {
+    return {
+      profiles: [],
+      meta_data: {}
+    }
+  },
+  head () {
+    return {
+      title:  'フレンド募集一覧です',
+      meta: [
+        { hid: 'description', name: 'description', content: '全てのフレンド募集の更新順一覧です！素晴らしいフレンドとの出会いがきっとあります。'}
+      ]
+    }
+  },
+  watchQuery: true
 }
 </script>

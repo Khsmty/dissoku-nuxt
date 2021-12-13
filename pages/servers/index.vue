@@ -82,17 +82,30 @@ export default {
     ServerSelectBtns: () => import('@/components/btns/ServerSelectBtns.vue'),
     BreadCrumb      : () => import('@/components/Breadcrumb.vue')
   },
-  async fetch (ctx) {
+  async asyncData ({app, $axios, query, error}) {
     try {
-      await ctx.store.dispatch('guild_list/fetchUpdate', ctx.route.query.page)
-      ctx.$setLikeData(ctx.store.getters['guild_list/get'].results)
-    } catch (err) {
-      ctx.error({statusCode: 400})
+      let data    = {}
+      data.guilds    = await $axios.$get('/api/guilds?sort=-upped_at&page='+query.page)
+      app.$setLikeData(data.guilds.results)
+      data.meta_data  = app.$loadupdatemeta(query)
+      data.breadcrumbs= [
+        {
+          name: 'ディス速',
+          path: '/'
+        },
+        {
+          name: 'サーバー一覧'
+        }
+      ]
+      return data
+    }
+    catch(err) {
+      error({statusCode: 400})
     }
   },
   data () {
     return {
-      guilds: this.$store.getters['guild_list/get'],
+      guilds:    [],
       meta_data: {}
     }
   },
@@ -104,18 +117,6 @@ export default {
       ]
     }
   },
-  watchQuery: true,
-  created() {
-      this.meta_data  = this.$loadupdatemeta(this.$route.query)
-      this.breadcrumbs= [
-        {
-          name: 'ディス速',
-          path: '/'
-        },
-        {
-          name: 'サーバー一覧'
-        }
-      ]
-  }
+  watchQuery: true
 }
 </script>

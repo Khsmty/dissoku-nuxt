@@ -78,14 +78,14 @@ export default {
   },
   data () {
     return {
-      botlist: this.$store.getters['bot_list/get'],
+      botlist: this.$store.getters['bot_list/getLike'],
       meta_data: {}
     }
   },
   async fetch (ctx) {
     try {
       await ctx.store.dispatch('bot_list/fetchLike', ctx.route.query.page)
-      ctx.$setLikeData(ctx.store.getters['bot_list/get'].results)
+      ctx.$setLikeData(ctx.store.getters['bot_list/getLike'].results)
     } catch (err) {
       ctx.error({statusCode: 400})
     }

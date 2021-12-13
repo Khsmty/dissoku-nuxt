@@ -3,25 +3,23 @@ export const state = () => ({
 })
 
 export const getters = {
-  get: (state) => {
-    return state.list[0]
+  getGuildById: (state) => (id) => {
+    return state.list.find(ele => ele.id === id)
   }
 }
 
 export const mutations = {
-  regist(state, data) {
-    state.list = []
+  add(state, data) {
+    state.list = state.list.filter(ele => ele.id !== data.id)
     state.list.push(data)
   }
 }
 
 export const actions = {
-  async fetch({ commit }, id) {
-    try {
-      let data = await this.$axios.$get(`/api/guilds/${id}/`)
-      commit('regist', data)
-    } catch(err) {
-      // pass
-    }
+  async fetchGuild({ commit }, id) {
+    let data = await this.$axios.$get(`/api/guilds/${id}/`)
+    data.id = id
+    data.type = "guild"
+    commit('add', data)
   }
 }

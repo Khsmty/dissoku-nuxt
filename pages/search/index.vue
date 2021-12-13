@@ -137,19 +137,36 @@ export default {
     Footer: () => import('@/components/Footer.vue'),
     BreadCrumb  : () => import('@/components/Breadcrumb.vue')
   },
-  data () {
-    return {
-      category_tags: this.$store.getters['tag/getSearchTag'],
-      keyword:    '',
-      textcls:    'text-h3',
-      app_url:    process.env.DISSOKUAPP_URL
+  async asyncData ({ $axios, error })
+  {
+    try
+    {
+      let data = {}
+      let res_tags    = $axios.$get('/api/tags/category_key/')
+      data.category_tags      = await res_tags
+      data.breadcrumbs= [
+        {
+          name: 'ディス速',
+          path: '/'
+        },
+        {
+          name: 'サーバー検索'
+        }
+      ]
+      return data
+    }
+    catch (err)
+    {
+      error({statusCode: 400})
     }
   },
-  async fetch (ctx) {
-    try {
-      await ctx.store.dispatch('tag/fetchSearchTag')
-    } catch (err) {
-      ctx.error({statusCode: 400})
+  data () {
+    return {
+      category_tags:      [],
+      keyword:    '',
+      cnt:      0,
+      textcls:    'text-h3',
+      app_url:    process.env.DISSOKUAPP_URL
     }
   },
   head () {
@@ -168,17 +185,6 @@ export default {
         { hid: 'og:locale', property: 'og:locale', content: 'ja_JP' },
       ]
     }
-  },
-  created(){
-    this.breadcrumbs= [
-        {
-          name: 'ディス速',
-          path: '/'
-        },
-        {
-          name: 'サーバー検索'
-        }
-      ]
   }
 }
 </script>

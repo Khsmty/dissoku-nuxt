@@ -1,0 +1,26 @@
+{
+  "title": "ディスコード速報",
+  "short_title": "ディス速",
+  "sub_title": "Discordサーバー・友達募集・ボット掲示板",
+  "common": {
+    "search_server": "サーバーを検索する",
+    "server": "サーバー",
+    "friend": "フレンド",
+    "bot": "ボット"
+  },
+  "header": {
+    "mypage": "マイページ",
+    "logout": "ログアウト"
+  },
+  "index": {
+    "servers_count": "サーバー掲載中!!",
+    "list_servers": "Discordサーバー一覧",
+    "active_ranking": "アクティブランキング"
+  },
+  "footer": {
+    "terms": "利用規約",
+    "privacy": "プライバシーポリシー",
+    "support": "ディス速運営サーバー",
+    "twitter": "運営ツイッター"
+  }
+}

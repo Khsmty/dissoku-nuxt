@@ -105,21 +105,29 @@ export default {
     Footer: () => import('@/components/Footer.vue'),
     ContentTitle: () => import('@/components/ContentTitle.vue')
   },
-  data () {
-    return {
-      profiles: this.$store.getters['user_index/getUpdate'],
-      tags: this.$store.getters['user_index/getTag'],
-      cnt: 0,
+  async asyncData ({ $axios, error })
+  {
+    try
+    {
+      let data = {}
+      let res_profiles = $axios.$get('api/userprofiles/?page_size=24')
+      let res_tags = $axios.$get('/api/usertags/?limit=50&ordering=-count')
+      let [profiles, tags] = await Promise.all([res_profiles, res_tags])
+      data.profiles = profiles
+      data.cnt = profiles.count
+      data.tags = tags
+      return data
+    }
+    catch (err)
+    {
+      error({statusCode: 400})
     }
   },
-  async fetch (ctx) {
-    try {
-      await Promise.all([
-        ctx.store.dispatch('user_index/fetchUpdate'),
-        ctx.store.dispatch('user_index/fetchTag')
-      ])
-    } catch (err) {
-      ctx.error({statusCode: 400})
+  data () {
+    return {
+      profiles:    [],
+      tags:      [],
+      cnt:      0,
     }
   },
   head () {

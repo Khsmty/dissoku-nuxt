@@ -103,36 +103,39 @@ export default {
     Pagination,
     BreadCrumb  : () => import('@/components/Breadcrumb.vue')
   },
-  async fetch (ctx) {
-    try {
-      await ctx.store.dispatch('guild_list/fetchSearch', {q:ctx.route.query.q, page:ctx.route.query.page})
-      ctx.$setLikeData(ctx.store.getters['guild_list/get'].results)
-    } catch (err) {
-      ctx.error({statusCode: 400})
+  async asyncData ({app, $axios, query, error })
+  {
+    try
+    {
+      let data    = {}
+      data.guilds    = await $axios.$get('/api/guilds/search/?q='+encodeURIComponent(query.q)+'&page='+query.page)
+      app.$setLikeData(data.guilds.results)
+      data.meta_data  = app.$loadsearchmeta(query)
+      data.breadcrumbs= [
+        {
+          name: 'ディス速',
+          path: '/'
+        },
+        {
+          name: 'サーバー検索',
+          path: '/search'
+        },
+        {
+          name: '「'+query.q+'」の検索結果'
+        }
+      ]
+      return data
+    }
+    catch(err) {
+      error({statusCode: 400})
     }
   },
   data () {
     return {
-      guilds: this.$store.getters['guild_list/get'],
-      title: this.$route.query.q,
+      guilds:    [],
+      title:    this.$route.query.q,
       meta_data:  {}
     }
-  },
-  created() {
-    this.meta_data  = this.$loadsearchmeta(this.$route.query)
-    this.breadcrumbs= [
-      {
-        name: 'ディス速',
-        path: '/'
-      },
-      {
-        name: 'サーバー検索',
-        path: '/search'
-      },
-      {
-        name: '「'+this.$route.query.q+'」の検索結果'
-      }
-    ]
   },
   head () {
     return {

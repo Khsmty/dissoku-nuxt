@@ -3,7 +3,7 @@
     v-model="keyword"
     class="px-0 ma-0"
     solo-inverted
-    label="サーバーを検索する"
+    :label="$t('common.search_server')"
     type="text"
     hide-details
     style="min-width:150px;"

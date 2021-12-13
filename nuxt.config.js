@@ -106,6 +106,7 @@ export default {
     "@nuxtjs/auth",
     "@nuxtjs/robots",
     "@nuxtjs/markdownit",
+    "@nuxtjs/i18n",
     "cookie-universal-nuxt",
     [
       "@nuxtjs/google-adsense",
@@ -168,9 +169,9 @@ export default {
   router: {
     trailingSlash: false,
     stringifyQuery: query => {
-      let qs = require("qs")
-      let result = qs.stringify(query, { format: "RFC1738" })
-      return result ? "?" + result : ""
+      let qs = require("qs");
+      let result = qs.stringify(query, { format: "RFC1738" });
+      return result ? "?" + result : "";
     }
   },
   auth: {
@@ -202,6 +203,20 @@ export default {
     }
   },
   markdownit: {
-    runtime: true,
+    runtime: true
+  },
+  i18n: {
+    locales: [
+      { code: "ja", name: "日本語 (Japanese)", iso: "ja_JP", file: "ja.json" },
+      { code: "en", name: "English", iso: "en-US", file: "en.json" }
+    ],
+    defaultLocale: "ja",
+    langDir: "~/locales/",
+    strategy: "prefix_except_default",
+    vueI18n: {
+      fallbackLocale: "ja"
+    },
+    vueI18nLoader: true,
+    lazy: true
   }
-}
+};

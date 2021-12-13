@@ -293,8 +293,8 @@
             />
             <ReviewHeading
               title="サーバーレビュー"
-              :score-avg="guild.score_avg"
-              :review-cnt="guild.review_cnt"
+              :score_avg="guild.score_avg"
+              :review_cnt="guild.review_cnt"
             />
             <ReviewList type="guildreview" />
           </v-col>
@@ -335,7 +335,7 @@ export default {
   },
   data () {
     return {
-      guild:      this.$store.getters['guild/get'],
+      guild:      this.$store.getters['guild/getGuildById'](this.$route.params.id),
       app_url:    process.env.DISSOKUAPP_URL,
       bg_style:    {},
       mdiDiscord:    mdiDiscord,
@@ -353,8 +353,8 @@ export default {
   async fetch (ctx) {
     try {
       await ctx.store.dispatch('guild_review/fetch', ctx.params.id)
-      await ctx.store.dispatch('guild/fetch', ctx.params.id)
-      await ctx.store.dispatch('like/setData', ctx.store.getters['guild/get'])
+      await ctx.store.dispatch('guild/fetchGuild', ctx.params.id)
+      await ctx.store.dispatch('like/setData', ctx.store.getters['guild/getGuildById'](ctx.params.id))
       ctx.$setLikeData(ctx.store.getters['guild_review/getById'](ctx.params.id).results)
     } catch (err) {
       ctx.error({statusCode: 400})
@@ -364,7 +364,7 @@ export default {
     return this.$getGuildHead(this.guild)
   },
   created () {
-    this.initdata(this.$store.getters['guild/get'])
+    this.initdata(this.$store.getters['guild/getGuildById'](this.$route.params.id))
     this.$store.dispatch('reportguild_dialog/closeDialog')
     this.$store.dispatch('review_dialog/closeDialog')
     this.$store.dispatch('dialog/closeDialog')

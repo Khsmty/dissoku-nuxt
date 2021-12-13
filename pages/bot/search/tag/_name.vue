@@ -69,19 +69,40 @@ export default {
     Footer: () => import('@/components/Footer.vue'),
     BreadCrumb  : () => import('@/components/Breadcrumb.vue')
   },
-  data () {
-    return {
-      botlist: this.$store.getters['bot_list/get'],
-      title: this.$route.params.name,
-      meta_data: {}
+  async asyncData ({app, $axios, params, query, error})
+  {
+    try
+    {
+      let data    = {}
+      let res_bots = $axios.$get(`/api/bots/?tags__name=${encodeURIComponent(params.name)}&page=${query.page}`)
+      data.meta_data  = app.$loadbottagmeta(params, query)
+      data.botlist  = await res_bots
+      app.$setLikeData(data.botlist.results)
+      data.breadcrumbs= [
+        {
+          name: 'ディス速',
+          path: '/'
+        },
+        {
+          name: 'ボットリスト',
+          path: '/bot'
+        },
+        {
+          name: 'タグ「'+params.name+'」のついているボット'
+        }
+      ]
+      return data
+    }
+    catch(err)
+    {
+      error({statusCode: 400})
     }
   },
-  async fetch (ctx) {
-    try {
-      await ctx.store.dispatch('bot_list/fetchByTag', {params: ctx.params, page: ctx.query.page})
-      ctx.$setLikeData(ctx.store.getters['bot_list/get'].results)
-    } catch (err) {
-      ctx.error({statusCode: 400})
+  data () {
+    return {
+      botlist:    [],
+      title:    this.$route.params.name,
+      meta_data:  {}
     }
   },
   head () {
@@ -92,22 +113,6 @@ export default {
       ]
     }
   },
-  watchQuery: true,
-  created () {
-    this.meta_data  = this.$loadbottagmeta(this.$route.params, this.$route.query)
-    this.breadcrumbs= [
-        {
-          name: 'ディス速',
-          path: '/'
-        },
-        {
-          name: 'ボットリスト',
-          path: '/bot'
-        },
-        {
-          name: 'タグ「'+this.$route.params.name+'」のついているボット'
-        }
-    ]
-  }
+  watchQuery: true
 }
 </script>

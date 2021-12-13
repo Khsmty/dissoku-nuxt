@@ -197,20 +197,39 @@ export default {
     ReportUserDialog: () => import('@/components/dialogs/ReportUserDialog.vue'),
     LoginDialog: () => import('@/components/dialogs/LoginDialog.vue')
   },
+  async asyncData ({ $axios, params, error })
+  {
+    try
+    {
+      let data = {}
+      let profile = await $axios.$get(`/api/userprofiles/${params.uid}/`)
+      data.profile = profile
+      data.url = `https://dissoku.net/friend/user/${profile.uid}`
+      data.breadcrumbs= [
+        {
+          name: 'ディス速',
+          path: '/'
+        },
+        {
+          name: 'フレンド募集',
+          path: '/friend'
+        },
+        {
+          name: profile.extra_data.username
+        }
+      ]
+      return data
+    }
+    catch(err) {
+      error({statusCode: 400})
+    }
+  },
   data() {
     return {
-      profile: this.$store.getters['user/get'],
+      profile: [],
       is_report:    false,
       snackbar: false,
       text: `コピーしました！`
-    }
-  },
-  async fetch (ctx) {
-    try {
-      await ctx.store.dispatch('user/fetch', ctx.params.uid)
-      await ctx.store.dispatch('like/setData', ctx.store.getters['user/get'])
-    } catch (err) {
-      ctx.error({statusCode: 400})
     }
   },
   head () {
@@ -230,7 +249,6 @@ export default {
     }
   },
   created () {
-    this.initdata(this.$store.getters['user/get'])
     this.$store.dispatch('reportuser_dialog/closeDialog')
     this.$store.dispatch('dialog/closeDialog')
   },
@@ -241,22 +259,6 @@ export default {
       } else {
         this.$store.dispatch('login_dialog/openDialog')
       }
-    },
-    initdata (profile) {
-      this.url = `https://dissoku.net/friend/user/${profile.uid}`
-      this.breadcrumbs = [
-        {
-          name: 'ディス速',
-          path: '/'
-        },
-        {
-          name: 'フレンド募集',
-          path: '/friend'
-        },
-        {
-          name: profile.extra_data.username
-        }
-      ]
     }
   }
 }

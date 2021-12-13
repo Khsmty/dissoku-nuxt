@@ -16,13 +16,13 @@
       >
         <nuxt-link
           text
-          to="/"
+          :to="localePath('/')"
           large
           class="float-left"
           style="text-decoration: none;"
         >
           <h1 class="grey--text text-body-1 title font-weight-bold pt-4">
-            ディス速
+            {{ $t('short_title') }}
           </h1>
         </nuxt-link>
         <div
@@ -50,12 +50,12 @@
               <v-list-item
                 color="#ADADAD"
                 nuxt
-                to="/mypage"
+                :to="localePath('/mypage')"
               >
                 <v-icon color="#ADADAD">
                   {{ mdiCog }}
                 </v-icon>
-                <v-list-item-title><v-subheader>マイページ</v-subheader></v-list-item-title>
+                <v-list-item-title><v-subheader>{{ $t('header.mypage') }}</v-subheader></v-list-item-title>
               </v-list-item>
               <v-list-item @click="$auth.logout();">
                 <v-icon color="#ADADAD">
@@ -63,7 +63,7 @@
                 </v-icon>
                 <v-list-item-title>
                   <v-subheader class="red--text">
-                    ログアウト
+                    {{ $t('header.logout') }}
                   </v-subheader>
                 </v-list-item-title>
               </v-list-item>
@@ -191,16 +191,16 @@ export default {
       drawer: false,
       menus: {
         top: {
-          name: `サーバー`,
-          to: "/"
+          name: this.$t('common.server'),
+          to: this.localePath('/')
         },
         serverlist: {
-          name: `フレンド`,
-          to: "/friend"
+          name: this.$t('common.friend'),
+          to: this.localePath('/friend')
         },
         bot: {
-          name: "ボット",
-          to: "/bot"
+          name: this.$t('common.bot'),
+          to: this.localePath('/bot')
         }
       },
       mypagemenus: {

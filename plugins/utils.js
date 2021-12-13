@@ -37,7 +37,7 @@ const loadsearchmeta = query => {
   return data
 }
 
-const loadusertagmeta = (params, query) => {
+const loadprofiletagmeta = (params, query) => {
   let data      = {}
   let page_str     = query.page != 1 ? '(' + query.page + 'ページ目)' : ''
   data.head_title    = '「' + params.order + '」のDiscordフレンド募集一覧' + page_str
@@ -122,7 +122,7 @@ export default (ctx, inject) => {
   inject('getavatar', getavatar)
   inject('getgendercolor', getgendercolor)
   inject('writeclipboard', writeclipboard)
-  inject('loadusertagmeta', loadusertagmeta)
+  inject('loadprofiletagmeta', loadprofiletagmeta)
   inject('loadbottagmeta', loadbottagmeta)
   inject('isURL', isURL)
   inject('statusColor', statusColor)

@@ -309,13 +309,13 @@
           </v-col>
         </v-row>
         <v-divider
-          v-if="bot.review-cnt"
+          v-if="bot.review_cnt"
           class="my-10"
         />
         <ReviewHeading
           title="ボットレビュー"
           :score_avg="bot.score_avg"
-          :review-cnt="bot.review_cnt"
+          :review_cnt="bot.review_cnt"
         />
         <ReviewList type="botreview" />
       </v-col>

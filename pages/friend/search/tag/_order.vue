@@ -69,18 +69,39 @@ export default {
     Footer: () => import('@/components/Footer.vue'),
     BreadCrumb  : () => import('@/components/Breadcrumb.vue')
   },
-  data () {
-    return {
-      profile: this.$store.getters['user_list/get'],
-      title:    this.$route.params.order,
-      meta_data:  {}
+  async asyncData ({app, $axios, params, query, error})
+  {
+    try
+    {
+      let data    = {}
+      let res_profile = $axios.$get(`/api/userprofiles/?tags__name=${encodeURIComponent(params.order)}&ordering=-upped_at&page=${query.page}`)
+      data.meta_data  = app.$loadprofiletagmeta(params, query)
+      data.profile  = await res_profile
+      data.breadcrumbs= [
+        {
+          name: 'ディス速',
+          path: '/'
+        },
+        {
+          name: 'フレンド募集',
+          path: '/friend'
+        },
+        {
+          name: 'タグ「'+params.order+'」のついている募集一覧'
+        }
+      ]
+      return data
+    }
+    catch(err)
+    {
+      error({statusCode: 400})
     }
   },
-  async fetch (ctx) {
-    try {
-      await ctx.store.dispatch('user_list/fetchByTag', {params: ctx.params, page: ctx.query.page})
-    } catch (err) {
-      ctx.error({statusCode: 400})
+  data () {
+    return {
+      profile:    [],
+      title:    this.$route.params.order,
+      meta_data:  {}
     }
   },
   head () {
@@ -91,22 +112,6 @@ export default {
       ]
     }
   },
-  watchQuery: true,
-  created () {
-    this.meta_data  = this.$loadusertagmeta(this.$route.params, this.$route.query)
-    this.breadcrumbs= [
-        {
-          name: 'ディス速',
-          path: '/'
-        },
-        {
-          name: 'フレンド募集',
-          path: '/friend'
-        },
-        {
-          name: 'タグ「'+this.$route.params.order+'」のついている募集一覧'
-        }
-      ]
-  }
+  watchQuery: true
 }
 </script>

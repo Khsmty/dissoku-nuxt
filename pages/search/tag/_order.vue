@@ -97,21 +97,44 @@ export default {
     BreadCrumb  : () => import('@/components/Breadcrumb.vue'),
     GuildTagBtn : () => import('@/components/btns/GuildTagBtn.vue')
   },
-  async fetch (ctx) {
-    try {
-      await ctx.store.dispatch('guild_list/fetchByTag', {order:ctx.route.params.order, page:ctx.route.query.page})
-      await ctx.store.dispatch('tag/fetchCategoryTag', ctx.route.params.order)
-      ctx.$setLikeData(ctx.store.getters['guild_list/get'].results)
-    } catch (err) {
-      ctx.error({statusCode: 400})
+  async asyncData ({app, $axios, params, query, error})
+  {
+    try
+    {
+      let data    = {}
+      data.guilds    = await $axios.$get(`/api/guilds/?tags__name=${encodeURIComponent(params.order)}&page=${query.page}`)
+      if (data.guilds.count == 0) {
+        error({statusCode: 400})
+      }
+      app.$setLikeData(data.guilds.results)
+      let res_tag_data  = await $axios.$get(`/api/tags/?name=${encodeURIComponent(params.order)}`)
+      data.tag_data = res_tag_data[0]
+      data.same_category_tags = await $axios.$get(`/api/tags/?category=${encodeURIComponent(data.tag_data.category)}&limit=15`)
+      data.meta_data  = app.$loadtagmeta(params, query)
+      data.breadcrumbs= [
+        {
+          name: 'ディス速',
+          path: '/'
+        },
+        {
+          name: 'サーバー検索',
+          path: '/search'
+        },
+        {
+          name: '「'+params.order+'」タグのついたサーバー'
+        }
+      ]
+      return data
+    }
+    catch(err)
+    {
+      error({statusCode: 400})
     }
   },
   data () {
     return {
-      guilds: this.$store.getters['guild_list/get'],
-      tag_data: this.$store.getters['tag/getTag'],
-      same_category_tags: this.$store.getters['tag/getCategoryTag'],
-      title: this.$route.params.order,
+      guilds:    [],
+      title:    this.$route.params.order,
       meta_data:  {}
     }
   },
@@ -123,22 +146,6 @@ export default {
       ]
     }
   },
-  watchQuery: ['page'],
-  created() {
-    this.meta_data  = this.$loadtagmeta(this.$route.params, this.$route.query)
-    this.breadcrumbs= [
-      {
-        name: 'ディス速',
-        path: '/'
-      },
-      {
-        name: 'サーバー検索',
-        path: '/search'
-      },
-      {
-        name: '「'+this.$route.params.order+'」タグのついたサーバー'
-      }
-    ]
-  },
+  watchQuery: ['page']
 }
 </script>
